@@ -1,5 +1,5 @@
 import { ResponseType as AxiosResponseType } from "axios";
-import ensureMeta from "./helpers/ensureMeta";
+import ensureMeta from "../helpers/ensureMeta";
 
 /**
  * Set the response type for method.

@@ -1,5 +1,5 @@
 import { AxiosResponseTransformer } from "axios";
-import ensureMeta from "./helpers/ensureMeta";
+import ensureMeta from "../helpers/ensureMeta";
 
 /**
  * Set response transformer for method.

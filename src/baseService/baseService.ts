@@ -1,12 +1,13 @@
 import * as qs from "qs";
 import { HttpMethod, NON_HTTP_REQUEST_PROPERTY_NAME } from "../constants";
-import { DataResolverFactory } from "../dataResolver";
 import { HttpMethodOptions } from "../decorators";
-import { isNode } from "../util";
+
 import { HttpClient } from "./httpClient";
 import { nonHTTPRequestMethod } from "./helpers/nonHTTPRequestMethod";
 import { ServiceBuilder } from "./serviceBuilder";
 import { LogCallback, RequestConfig } from "./types";
+import { isNode } from "../utils";
+import DataResolverFactory from "../resolvers/Data";
 
 export class BaseService {
   public __meta__: any;

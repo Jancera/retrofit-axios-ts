@@ -1,4 +1,4 @@
-import ensureMeta from "./helpers/ensureMeta";
+import ensureMeta from "../helpers/ensureMeta";
 
 /**
  * Mark method as deprecated

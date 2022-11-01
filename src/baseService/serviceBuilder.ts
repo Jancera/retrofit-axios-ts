@@ -14,12 +14,14 @@ import {
 export class ServiceBuilder {
   private _endpoint: string = "";
   private _standalone: boolean | AxiosInstance = false;
-  private _requestInterceptors: Array<
+  private readonly _requestInterceptors: Array<
     RequestInterceptorFunction | RequestInterceptor | RequestInterceptors
   > = [];
-  private _responseInterceptors: Array<
+
+  private readonly _responseInterceptors: Array<
     ResponseInterceptorFunction | ResponseInterceptor | ResponseInterceptors
   > = [];
+
   private _timeout: number = 60000;
   private _logCallback: LogCallback | null = null;
 

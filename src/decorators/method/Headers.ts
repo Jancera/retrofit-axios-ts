@@ -1,4 +1,4 @@
-import ensureMeta from "./helpers/ensureMeta";
+import ensureMeta from "../helpers/ensureMeta";
 
 // [ ] Check Headers new API
 /**

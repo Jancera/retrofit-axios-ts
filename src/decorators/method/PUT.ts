@@ -1,5 +1,5 @@
-import registerMethod from "./helpers/registerMethod";
-import { HttpMethodOptions } from "./types";
+import registerMethod from "../helpers/registerMethod";
+import { HttpMethodOptions } from "../types";
 
 /**
  * PUT decorator.

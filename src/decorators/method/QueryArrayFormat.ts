@@ -1,6 +1,6 @@
-import { BaseService } from "../BaseService";
-import ensureMeta from "./helpers/ensureMeta";
-import { QueryArrayFormat as QueryArrayFormatType } from "./types";
+import { BaseService } from "../../BaseService";
+import ensureMeta from "../helpers/ensureMeta";
+import { QueryArrayFormat as QueryArrayFormatType } from "../types";
 
 /**
  * Set array format for query

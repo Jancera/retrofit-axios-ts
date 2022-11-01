@@ -1,5 +1,5 @@
-import ensureMeta from "./helpers/ensureMeta";
-import { Query } from "./types";
+import ensureMeta from "../helpers/ensureMeta";
+import { Query } from "../types";
 
 /**
  * Set static query for API endpoint.

@@ -1,12 +1,10 @@
 import * as fs from "fs";
-import {
-  BaseDataResolver,
-  FormUrlencodedResolver,
-  MultiPartResolver,
-  JsonResolver,
-  TextXmlResolver,
-  DataResolverFactory,
-} from "../src/dataResolver";
+import BaseDataResolver from "../src/resolvers/BaseData";
+import DataResolverFactory from "../src/resolvers/Data";
+import FormUrlencodedResolver from "../src/resolvers/FormUrlencoded";
+import JsonResolver from "../src/resolvers/Json";
+import MultiPartResolver from "../src/resolvers/MultiPart";
+import TextXmlResolver from "../src/resolvers/TextXml";
 
 describe("Test data resolver.", () => {
   test("Test BaseDataResolver.", async () => {
@@ -23,7 +21,7 @@ describe("Test data resolver.", () => {
       "content-type": "application/x-www-form-urlencoded",
     };
     const obj = {
-      foo: 'bar',
+      foo: "bar",
     };
     const data = Object.create(obj);
     data.a = 1;
@@ -47,7 +45,9 @@ describe("Test data resolver.", () => {
       e: ["foo", "bar"],
     };
     const resolvedData = formUrlencodedResolver.resolve(headers, data);
-    expect(resolvedData).toEqual("a=1&b=hello&c=true&d=null&e=%5B%22foo%22%2C%22bar%22%5D");
+    expect(resolvedData).toEqual(
+      "a=1&b=hello&c=true&d=null&e=%5B%22foo%22%2C%22bar%22%5D",
+    );
   });
 
   test("Test MultiPartResolver.", async () => {
@@ -80,7 +80,7 @@ describe("Test data resolver.", () => {
       b: "b",
       c: true,
       d: null,
-      e: [1,2,3],
+      e: [1, 2, 3],
       f: {
         f1: 1,
         f2: ["a", "b", "c"],
@@ -109,7 +109,9 @@ describe("Test data resolver.", () => {
 
   test("Test DataResolverFactory.", async () => {
     const dataResolverFactory = new DataResolverFactory();
-    const dataResolver = dataResolverFactory.createDataResolver('application/user-defined-content-type');
+    const dataResolver = dataResolverFactory.createDataResolver(
+      "application/user-defined-content-type",
+    );
     expect(dataResolver instanceof JsonResolver).toBeTruthy();
   });
 });

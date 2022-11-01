@@ -7,15 +7,15 @@ export type RequestConfig = AxiosRequestConfig;
 export interface Response<T = any> extends AxiosResponse<T> {}
 
 export interface RequestInterceptors {
-  fulfilled(
+  fulfilled: (
     value: AxiosRequestConfig,
-  ): AxiosRequestConfig | Promise<AxiosRequestConfig>;
-  reject(erro: any): void;
+  ) => AxiosRequestConfig | Promise<AxiosRequestConfig>;
+  reject: (erro: any) => void;
 }
 
 export interface ResponseInterceptors {
-  fulfilled<T>(
+  fulfilled: <T>(
     value: AxiosResponse<T>,
-  ): AxiosResponse<T> | Promise<AxiosResponse<T>>;
-  reject(erro: any): void;
+  ) => AxiosResponse<T> | Promise<AxiosResponse<T>>;
+  reject: (erro: any) => void;
 }

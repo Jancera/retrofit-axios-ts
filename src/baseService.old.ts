@@ -1,7 +1,7 @@
 import * as qs from "qs";
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
 import FormData from "form-data";
-import { DataResolverFactory } from "./dataResolver";
+import { DataResolverFactory } from "./dataResolver.old";
 import { HttpMethod } from "./constants";
 import { HttpMethodOptions } from "./decorators";
 import { isNode } from "./util";
@@ -14,9 +14,7 @@ export type ResponseInterceptorFunction<T = any> = (
 ) => AxiosResponse<T> | Promise<AxiosResponse<T>>;
 
 abstract class BaseInterceptor {
-  public onRejected(error: any) {
-    return;
-  }
+  public onRejected(error: any) {}
 }
 
 export abstract class RequestInterceptor extends BaseInterceptor {
