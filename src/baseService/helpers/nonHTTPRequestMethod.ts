@@ -1,4 +1,4 @@
-import { NON_HTTP_REQUEST_PROPERTY_NAME } from "../constants";
+import { NON_HTTP_REQUEST_PROPERTY_NAME } from "../../constants";
 
 export const nonHTTPRequestMethod = (target: any, methodName: string) => {
   const descriptor = {

@@ -1,4 +1,4 @@
-export * from "./BaseService";
+export * from "./baseService";
 export * from "./decorators";
 
 // ACTIONS
