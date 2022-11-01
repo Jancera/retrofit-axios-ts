@@ -1,4 +1,4 @@
-import ensureMeta from "./helpers/ensureMeta";
+import ensureMeta from "../helpers/ensureMeta";
 
 /**
  * Set query as variable in API method.

@@ -1,4 +1,4 @@
-import ensureMeta from "./helpers/ensureMeta";
+import ensureMeta from "../helpers/ensureMeta";
 
 /**
  * Set field of form for API endpoint. Only effective when method has been decorated by @FormUrlEncoded.

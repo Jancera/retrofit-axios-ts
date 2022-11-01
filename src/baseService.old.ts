@@ -1,10 +1,4 @@
-import * as qs from "qs";
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
-import FormData from "form-data";
-import { DataResolverFactory } from "./dataResolver.old";
-import { HttpMethod } from "./constants";
-import { HttpMethodOptions } from "./decorators";
-import { isNode } from "./util";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 
 export type RequestInterceptorFunction = (
   value: AxiosRequestConfig,
