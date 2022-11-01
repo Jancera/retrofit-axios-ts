@@ -205,7 +205,7 @@ describe("Test ts-retrofit.", () => {
         "application/x-www-form-urlencoded;charset=utf-8",
       );
 
-      expect(response.config.headers["Accept"]).toEqual("application/json");
+      expect(response.config.headers.Accept).toEqual("application/json");
     }
   });
 

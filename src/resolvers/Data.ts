@@ -1,9 +1,9 @@
 import { DATA_CONTENT_TYPES } from "../constants";
 import BaseDataResolver from "./BaseData";
-import { FormUrlencodedResolver } from "./FormUrlencoded";
-import { JsonResolver } from "./Json";
-import { MultiPartResolver } from "./MultiPart";
-import { TextXmlResolver } from "./TextXml";
+import FormUrlencodedResolver from "./FormUrlencoded";
+import JsonResolver from "./Json";
+import MultiPartResolver from "./MultiPart";
+import TextXmlResolver from "./TextXml";
 
 const dataResolverMap: Map<string, typeof BaseDataResolver> = new Map<
   string,

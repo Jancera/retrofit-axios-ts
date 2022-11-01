@@ -9,7 +9,7 @@ const upload = multer();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const sleep = async (milliseconds: number): Promise<void> => {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve();
     }, milliseconds);
@@ -103,7 +103,7 @@ app.post("/api/v1/interceptor", function (req, res) {
 });
 
 app.get("/api/v1/header", function (req, res) {
-  res.status(200).json({ role: req.header('X-Role') });
+  res.status(200).json({ role: req.header("X-Role") });
 });
 
 app.post("/api/v1/request-transformer", function (req, res) {
@@ -133,12 +133,13 @@ app.post("/graphql", async function (req, res) {
     data: {
       viewer: {
         name: "nullcc",
-        location: "Xiamen China" },
-        repository: {
-          stargazerCount: 45,
-          forkCount: 11
-      }
-    }
+        location: "Xiamen China",
+      },
+      repository: {
+        stargazerCount: 45,
+        forkCount: 11,
+      },
+    },
   });
 });
 

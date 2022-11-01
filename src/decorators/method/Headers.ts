@@ -1,5 +1,5 @@
 import ensureMeta from "../helpers/ensureMeta";
-
+import { Headers as HeadersObj } from "../types";
 // [ ] Check Headers new API
 /**
  * Set static HTTP headers for API endpoint.
@@ -10,7 +10,7 @@ import ensureMeta from "../helpers/ensureMeta";
  *         })
  * @constructor
  */
-const Headers = (headers: Headers) => {
+const Headers = (headers: HeadersObj) => {
   return (target: any, methodName: string, descriptor: PropertyDescriptor) => {
     ensureMeta(target, methodName);
     if (!target.__meta__[methodName].headers) {
