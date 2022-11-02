@@ -1,5 +1,5 @@
 import BaseDataResolver from "./BaseData";
-
+import FormData from "form-data";
 export default class MultiPartResolver extends BaseDataResolver {
   /* constructor() {
     super();

@@ -83,6 +83,7 @@ app.get("/api/v1/file", upload.any(), function (req, res) {
 });
 
 app.post("/api/v1/sms", jsonParser, function (req, res) {
+  console.warn("Body", req.body);
   // get fields of form data from `req.body`
   // get files from req.files array
   res.status(200).json({});
@@ -100,6 +101,10 @@ app.get("/api/v1/interceptor", function (req, res) {
 
 app.post("/api/v1/interceptor", function (req, res) {
   res.status(200).json(req.body);
+});
+
+app.get("/api/v1/forbidden", function (req, res) {
+  res.status(403).json("Forbidden");
 });
 
 app.get("/api/v1/header", function (req, res) {

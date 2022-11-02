@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as fs from "fs";
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { app } from "./fixture/server";
 
 import {
@@ -9,14 +9,12 @@ import {
   API_PREFIX,
   TOKEN,
   UserService,
-  SearchService,
   GroupService,
   PostService,
   AuthService,
   FileService,
   MessagingService,
   User,
-  SearchQuery,
   Auth,
   Post,
   Group,
@@ -25,24 +23,20 @@ import {
   TimeoutService,
   ResponseStatusService,
   ConfigService,
-  AbsoluteURLService,
   HealthService,
   GraphQLService,
+  AbsoluteURLService,
+  SearchService,
+  SearchQuery,
 } from "./fixture/fixtures";
-import { HttpContentType } from "../src/constants";
 import { ServiceBuilder } from "../src/BaseService/serviceBuilder";
-import {
-  RequestInterceptor,
-  RequestInterceptorFunction,
-  ResponseInterceptorFunction,
-} from "../src/baseService.old";
-import { RequestConfig } from "../src/BaseService/types";
+import { RequestConfig, RequestInterceptors } from "../src/BaseService/types";
 
-declare module "axios" {
+/* declare module "axios" {
   interface AxiosRequestConfig {
     standaloneId?: string;
   }
-}
+} */
 
 describe("Test ts-retrofit.", () => {
   let server: http.Server;
@@ -209,15 +203,6 @@ describe("Test ts-retrofit.", () => {
     }
   });
 
-  test.skip("Test `@Header` decorator.", async () => {
-    const userService = new ServiceBuilder()
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(UserService);
-    const response = await userService.getUsers(TOKEN);
-    if (response.config.headers)
-      expect(response.config.headers["X-Token"]).toEqual(TOKEN);
-  });
-
   test("Test `@HeaderMap` decorator.", async () => {
     const postService = new ServiceBuilder()
       .setEndpoint(TEST_SERVER_ENDPOINT)
@@ -251,75 +236,6 @@ describe("Test ts-retrofit.", () => {
       .build(PostService);
     const response = await postService.getPosts1("typescript");
     expect(response.config.params.group).toEqual("typescript");
-  });
-
-  test.skip("Test `@QueryArrayFormat` decorator.", async () => {
-    const postService = new ServiceBuilder()
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(PostService);
-
-    const response1 = await postService.getPostsWithQueryArrayFormatIndices([
-      "typescript",
-      "ruby",
-      "python",
-    ]);
-    expect(response1.request.path).toEqual(
-      "/api/v1/posts?groups%5B0%5D=typescript&groups%5B1%5D=ruby&groups%5B2%5D=python",
-    );
-
-    const response2 = await postService.getPostsWithQueryArrayFormatBrackets([
-      "typescript",
-      "ruby",
-      "python",
-    ]);
-    expect(response2.request.path).toEqual(
-      "/api/v1/posts?groups%5B%5D=typescript&groups%5B%5D=ruby&groups%5B%5D=python",
-    );
-
-    const response3 = await postService.getPostsWithQueryArrayFormatRepeat([
-      "typescript",
-      "ruby",
-      "python",
-    ]);
-    expect(response3.request.path).toEqual(
-      "/api/v1/posts?groups=typescript&groups=ruby&groups=python",
-    );
-
-    const response4 = await postService.getPostsWithQueryArrayFormatComma([
-      "typescript",
-      "ruby",
-      "python",
-    ]);
-    expect(response4.request.path).toEqual(
-      "/api/v1/posts?groups=typescript%2Cruby%2Cpython",
-    );
-  });
-
-  test.skip("Test `@QueryMap` decorator.", async () => {
-    const searchService = new ServiceBuilder()
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(SearchService);
-    const query: SearchQuery = {
-      title: "TypeScript",
-      author: "John Doe",
-    };
-    const response = await searchService.search(TOKEN, query);
-    expect(response.config.url).toEqual(
-      `${TEST_SERVER_ENDPOINT}${API_PREFIX}/search`,
-    );
-    expect(response.config.params).toMatchObject(query);
-  });
-
-  test.skip("Test `@FormUrlEncoded` decorator.", async () => {
-    const postService = new ServiceBuilder()
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(PostService);
-    const response = await postService.createPost("hello", "world");
-
-    if (response.config.headers)
-      expect(response.config.headers["Content-Type"]).toEqual(
-        "application/x-www-form-urlencoded;charset=utf-8",
-      );
   });
 
   test("Test `@FormUrlEncoded` decorator with nested object.", async () => {
@@ -367,6 +283,7 @@ describe("Test ts-retrofit.", () => {
 
   test("Test `@Multipart` decorator.", async () => {
     const fileService = new ServiceBuilder()
+
       .setEndpoint(TEST_SERVER_ENDPOINT)
       .build(FileService);
     const bucket = {
@@ -378,176 +295,199 @@ describe("Test ts-retrofit.", () => {
     };
     const response = await fileService.upload(bucket, file);
     if (response.config.headers)
-      expect(response.config.headers["Content-Type"]).toContain(
+      expect(response.config.headers["content-type"]).toContain(
         "multipart/form-data",
       );
   });
 
+  // [ ] Log request data using interceptor to see where the parts are being placed
+
   test("Test `@Multipart` decorator 1.", async () => {
     const messagingService = new ServiceBuilder()
+      .setRequestInterceptors([
+        {
+          fulfilled: (config) => {
+            console.warn("Fulfilled", config);
+            return config;
+          },
+        },
+      ])
       .setEndpoint(TEST_SERVER_ENDPOINT)
       .build(MessagingService);
     const from = { value: "+11111111" };
     const to = { value: ["+22222222", "+33333333"] };
     const response = await messagingService.createSMS(from, to);
+
     if (response.config.headers)
-      expect(response.config.headers["Content-Type"]).toContain(
+      expect(response.config.headers["content-type"]).toContain(
         "multipart/form-data",
       );
   });
 
-  test.skip("Test multi-standalone services", async () => {
-    const standaloneId1 = Math.random().toString();
-    const axiosInstance1 = axios.create();
-    axiosInstance1.interceptors.response.use((value) => {
-      value.config.standaloneId = standaloneId1;
-      return value;
-    });
-    const userService1 = new ServiceBuilder()
-      .setStandalone(axiosInstance1)
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(UserService);
+  test("Test Request Interceptor Fulfilled", async () => {
+    const role = "interceptor";
 
-    const response1 = await userService1.getUsers(TOKEN);
-    expect(response1.config.standaloneId).toEqual(standaloneId1);
-
-    const standaloneId2 = Math.random().toString();
-    const axiosInstance2 = axios.create();
-    axiosInstance2.interceptors.response.use((value) => {
-      value.config.standaloneId = standaloneId2;
-      return value;
-    });
-    const userService2 = new ServiceBuilder()
-      .setStandalone(axiosInstance2)
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(UserService);
-
-    const response2 = await userService2.getUsers(TOKEN);
-    expect(response2.config.standaloneId).toEqual(standaloneId2);
-
-    const standaloneId3 = Math.random().toString();
-    const axiosInstance3 = axios.create();
-    axiosInstance3.interceptors.response.use((value) => {
-      value.config.standaloneId = standaloneId3;
-      return value;
-    });
-    const userService3 = new ServiceBuilder()
-      .setStandalone(axiosInstance3)
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(UserService);
-
-    const response3 = await userService3.getUsers(TOKEN);
-    expect(response3.config.standaloneId).toEqual(standaloneId3);
-  });
-
-  test.skip("Test Request Interceptors", async () => {
-    const requestInterceptor: RequestInterceptorFunction = (config) => {
-      switch (config.method) {
-        case "GET":
-        case "get":
-          if (typeof config.params !== "object") {
-            config.params = {};
-          }
-          config.params.role = "interceptor";
-          break;
-        case "POST":
-        case "post":
-          if (
-            config.headers &&
-            config.headers.post &&
-            config.headers.post["Content-Type"] === HttpContentType.urlencoded
-          ) {
-            const data = config.data;
-            const body: { [key: string]: string } = {};
-            if (typeof data === "string" && data.length) {
-              const list = data.split("&").map((v) => v.split("="));
-              for (const [key, value] of list) {
-                body[key] = value;
-              }
-            } else if (typeof data === "object") {
-              for (const key in data) {
-                if (data.hasOwnProperty(key)) {
-                  const element = data[key];
-                  body[key] = element;
-                }
-              }
-            }
-            body.role = "interceptor";
-            config.data = Object.entries(body)
-              .map((v) => v.join("="))
-              .join("&");
-          }
-          break;
-        default:
-          break;
-      }
-      return config;
-    };
-
-    const interceptorService = new ServiceBuilder()
-      .setStandalone(true)
-      .setRequestInterceptors(requestInterceptor)
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(InterceptorService);
-
-    const response1 = await interceptorService.getParams();
-    expect(response1.config.params.role).toEqual("interceptor");
-    expect(response1.data.role).toEqual("interceptor");
-
-    const response2 = await interceptorService.createParams({
-      title: "title",
-      content: "content",
-    });
-    expect(response2.data.role).toEqual("interceptor");
-  });
-
-  test.skip("Test Response Interceptors", async () => {
-    const standaloneId = "im a interceptor";
-
-    // tslint:disable-next-line:no-shadowed-variable
-    const responseInterceptor: ResponseInterceptorFunction = (response) => {
-      response.config.standaloneId = standaloneId;
-      return response;
-    };
-
-    const userService = new ServiceBuilder()
-      .setStandalone(true)
-      .setResponseInterceptors(responseInterceptor)
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(UserService);
-
-    const response = await userService.getUsers(TOKEN);
-    expect(response.config.standaloneId).toEqual(standaloneId);
-  });
-
-  test("Test Interceptor Abstract Class", async () => {
-    class AddHeaderInterceptor extends RequestInterceptor {
-      public role = "interceptor";
-
-      public onFulfilled(config: AxiosRequestConfig) {
-        switch (config.method) {
-          case "get":
-          case "GET":
-            if (typeof config.headers?.get === "object") {
-              config.headers.get["X-Role"] = this.role;
-            }
-            break;
-
-          default:
-            break;
+    const requestInterceptors: RequestInterceptors = {
+      fulfilled: (config) => {
+        if (config.method === "get" && config.headers) {
+          config.headers["X-Role"] = role;
         }
         return config;
-      }
-    }
+      },
+      rejected: () => {
+        console.log("Hello from error interceptor");
+      },
+    };
 
     const interceptorService = new ServiceBuilder()
       .setStandalone(true)
-      .setRequestInterceptors(new AddHeaderInterceptor())
+      .setRequestInterceptors([requestInterceptors])
       .setEndpoint(TEST_SERVER_ENDPOINT)
       .build(InterceptorService);
 
     const response = await interceptorService.getHeader();
     expect(response.data.role).toEqual("interceptor");
+  });
+
+  test.skip("Test Request Interceptor Rejected", async () => {
+    const requestInterceptors: RequestInterceptors = {
+      fulfilled: (config) => {
+        console.warn("Fulfilled");
+        console.warn(config);
+        return config;
+      },
+      rejected: (error) => {
+        console.warn("Rejected");
+        expect(error.response.data).toEqual("Forbidden");
+      },
+    };
+
+    const interceptorService = new ServiceBuilder()
+      .setStandalone(true)
+      .setRequestInterceptors([requestInterceptors])
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(InterceptorService);
+
+    try {
+      await interceptorService.getError();
+    } catch (error: any) {
+      console.log("error");
+      // expect(error.response.status).toEqual(404);
+    }
+  });
+
+  test.skip("Test Response Interceptor Rejected", async () => {
+    const requestInterceptors: RequestInterceptors = {
+      fulfilled: (config) => {
+        return config;
+      },
+      rejected: (e) => {
+        console.warn(e);
+      },
+    };
+
+    const interceptorService = new ServiceBuilder()
+      .setStandalone(true)
+      .setRequestInterceptors([requestInterceptors])
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(InterceptorService);
+
+    try {
+      await interceptorService.getForbidden();
+    } catch (error: any) {
+      console.warn(error);
+      expect(error.response.status).toEqual(403);
+    }
+  });
+
+  test("Test absolute URL.", async () => {
+    const service = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(AbsoluteURLService);
+    try {
+      await service.getSomethingAbsolute();
+    } catch (err: any) {
+      expect(err.config.url).toEqual("https://absolute-foobar.com");
+    }
+  });
+
+  test.skip("Test `@QueryArrayFormat` decorator.", async () => {
+    const postService = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(PostService);
+
+    const response1 = await postService.getPostsWithQueryArrayFormatIndices([
+      "typescript",
+      "ruby",
+      "python",
+    ]);
+
+    expect(response1.request.path).toEqual(
+      "/api/v1/posts?groups[0]=typescript&groups[1]=ruby&groups[2]=python",
+    );
+
+    const response2 = await postService.getPostsWithQueryArrayFormatBrackets([
+      "typescript",
+      "ruby",
+      "python",
+    ]);
+    expect(response2.request.path).toEqual(
+      "/api/v1/posts?groups[]=typescript&groups[]=ruby&groups[]=python",
+    );
+
+    const response3 = await postService.getPostsWithQueryArrayFormatRepeat([
+      "typescript",
+      "ruby",
+      "python",
+    ]);
+    expect(response3.request.path).toEqual(
+      "/api/v1/posts?groups=typescript&groups=ruby&groups=python",
+    );
+
+    const response4 = await postService.getPostsWithQueryArrayFormatComma([
+      "typescript",
+      "ruby",
+      "python",
+    ]);
+    expect(response4.request.path).toEqual(
+      "/api/v1/posts?groups=typescript,ruby,python",
+    );
+  });
+
+  test("Test `@QueryMap` decorator.", async () => {
+    const searchService = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(SearchService);
+    const query: SearchQuery = {
+      title: "TypeScript",
+      author: "John Doe",
+    };
+    const response = await searchService.search(TOKEN, query);
+    expect(response.config.url).toEqual(
+      `${TEST_SERVER_ENDPOINT}${API_PREFIX}/search`,
+    );
+    expect(response.config.params).toMatchObject(query);
+  });
+
+  test("Test `@FormUrlEncoded` decorator.", async () => {
+    const postService = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(PostService);
+    const response = await postService.createPost("hello", "world");
+
+    if (response.config.headers)
+      expect(response.config.headers["content-type"]).toEqual(
+        "application/x-www-form-urlencoded;charset=utf-8",
+      );
+  });
+
+  test("Test `@Header` decorator.", async () => {
+    const userService = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(UserService);
+    const response = await userService.getUsers(TOKEN);
+    if (response.config.headers)
+      expect(response.config.headers["X-Token"]).toEqual(TOKEN);
   });
 
   test("Test `@ResponseType` decorator.", async () => {
@@ -625,17 +565,6 @@ describe("Test ts-retrofit.", () => {
       .build(ConfigService);
     const response = await service.getConfig();
     expect(response.config.maxRedirects).toEqual(1);
-  });
-
-  test.skip("Test absolute URL.", async () => {
-    const service = new ServiceBuilder()
-      .setEndpoint(TEST_SERVER_ENDPOINT)
-      .build(AbsoluteURLService);
-    try {
-      const response = await service.getSomethingAbsolute();
-    } catch (err: any) {
-      expect(err.config.url).toEqual("https://absolute-foobar.com");
-    }
   });
 
   test("Test `ignoreBasePath` in HTTP method option.", async () => {

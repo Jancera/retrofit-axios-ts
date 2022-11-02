@@ -1,11 +1,16 @@
 import * as qs from "qs";
 import { HttpMethod, NON_HTTP_REQUEST_PROPERTY_NAME } from "../constants";
 import { HttpMethodOptions } from "../decorators";
-
+import FormData from "form-data";
 import { HttpClient } from "./httpClient";
 import { nonHTTPRequestMethod } from "./helpers/nonHTTPRequestMethod";
 import { ServiceBuilder } from "./serviceBuilder";
-import { LogCallback, RequestConfig } from "./types";
+import {
+  LogCallback,
+  RequestConfig,
+  RequestInterceptorFunction,
+  ResponseInterceptorFunction,
+} from "./types";
 import { isNode } from "../utils";
 import DataResolverFactory from "../resolvers/Data";
 
@@ -66,19 +71,19 @@ export class BaseService {
     return this._httpClient.isStandalone();
   }
 
-  /* @nonHTTPRequestMethod
+  @nonHTTPRequestMethod
   public useRequestInterceptor(
     interceptor: RequestInterceptorFunction,
   ): number {
     return this._httpClient.useRequestInterceptor(interceptor);
-  } */
+  }
 
-  /* @nonHTTPRequestMethod
+  @nonHTTPRequestMethod
   public useResponseInterceptor(
     interceptor: ResponseInterceptorFunction,
   ): number {
     return this._httpClient.useResponseInterceptor(interceptor);
-  } */
+  }
 
   @nonHTTPRequestMethod
   public ejectRequestInterceptor(id: number): void {
@@ -163,8 +168,7 @@ export class BaseService {
     ) {
       headers = {
         ...headers,
-        ...data /* as FormData */
-          .getHeaders(),
+        ...(data as FormData).getHeaders(),
       };
     }
     return { url, method, headers, query, data };

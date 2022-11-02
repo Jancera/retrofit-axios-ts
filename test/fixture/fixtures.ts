@@ -318,6 +318,17 @@ export class InterceptorService extends BaseService {
   async getHeader(): Promise<Response> {
     return <Response>{};
   }
+
+  @GET("/forbidden")
+  async getForbidden(): Promise<Response> {
+    return <Response>{};
+  }
+
+  @GET("/error")
+  @Timeout(1000)
+  async getError(): Promise<Response> {
+    return <Response>{};
+  }
 }
 
 @BasePath(API_PREFIX)

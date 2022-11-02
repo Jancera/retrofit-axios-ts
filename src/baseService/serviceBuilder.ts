@@ -1,10 +1,5 @@
 import { AxiosInstance } from "axios";
-import {
-  RequestInterceptor,
-  RequestInterceptorFunction,
-  ResponseInterceptor,
-  ResponseInterceptorFunction,
-} from "../baseService.old";
+
 import {
   LogCallback,
   RequestInterceptors,
@@ -14,13 +9,9 @@ import {
 export class ServiceBuilder {
   private _endpoint: string = "";
   private _standalone: boolean | AxiosInstance = false;
-  private readonly _requestInterceptors: Array<
-    RequestInterceptorFunction | RequestInterceptor | RequestInterceptors
-  > = [];
+  private readonly _requestInterceptors: RequestInterceptors[] = [];
 
-  private readonly _responseInterceptors: Array<
-    ResponseInterceptorFunction | ResponseInterceptor | ResponseInterceptors
-  > = [];
+  private readonly _responseInterceptors: ResponseInterceptors[] = [];
 
   private _timeout: number = 60000;
   private _logCallback: LogCallback | null = null;
@@ -40,18 +31,14 @@ export class ServiceBuilder {
   }
 
   public setRequestInterceptors(
-    ...interceptors: Array<
-      RequestInterceptorFunction | RequestInterceptor | RequestInterceptors
-    >
+    interceptors: RequestInterceptors[],
   ): ServiceBuilder {
     this._requestInterceptors.push(...interceptors);
     return this;
   }
 
   public setResponseInterceptors(
-    ...interceptors: Array<
-      ResponseInterceptorFunction | ResponseInterceptor | ResponseInterceptors
-    >
+    interceptors: ResponseInterceptors[],
   ): ServiceBuilder {
     this._responseInterceptors.push(...interceptors);
     return this;
@@ -75,15 +62,11 @@ export class ServiceBuilder {
     return this._standalone;
   }
 
-  get requestInterceptors(): Array<
-    RequestInterceptorFunction | RequestInterceptor | RequestInterceptors
-  > {
+  get requestInterceptors(): RequestInterceptors[] {
     return this._requestInterceptors;
   }
 
-  get responseInterceptors(): Array<
-    ResponseInterceptorFunction | ResponseInterceptor | ResponseInterceptors
-  > {
+  get responseInterceptors(): ResponseInterceptors[] {
     return this._responseInterceptors;
   }
 
