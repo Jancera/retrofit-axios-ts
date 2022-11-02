@@ -28,6 +28,8 @@
     "jest/prefer-to-have-length": "warn",
     "jest/valid-expect": "error",
     "no-useless-escape": 0,
-    "new-cap": 0
+    "new-cap": 0,
+    "@typescript-eslint/consistent-type-assertions": 0,
+    "@typescript-eslint/restrict-template-expressions": 0
   }
 }

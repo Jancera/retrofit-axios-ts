@@ -1,6 +1,5 @@
 import * as http from "http";
 import * as fs from "fs";
-import axios from "axios";
 import { app } from "./fixture/server";
 
 import {
@@ -30,7 +29,11 @@ import {
   SearchQuery,
 } from "./fixture/fixtures";
 import { ServiceBuilder } from "../src/BaseService/serviceBuilder";
-import { RequestConfig, RequestInterceptors } from "../src/BaseService/types";
+import {
+  RequestConfig,
+  RequestInterceptors,
+  Response,
+} from "../src/BaseService/types";
 
 /* declare module "axios" {
   interface AxiosRequestConfig {
@@ -260,7 +263,7 @@ describe("Test ts-retrofit.", () => {
       .build(PostService);
     const response = await postService.createPost("hello", "world");
     if (response.config.headers)
-      expect(response.config.headers["Content-Type"]).toEqual(
+      expect(response.config.headers["content-type"]).toEqual(
         "application/x-www-form-urlencoded;charset=utf-8",
       );
     expect(response.config.data).toEqual("title=hello&content=world");
@@ -275,7 +278,7 @@ describe("Test ts-retrofit.", () => {
       content: "world",
     });
     if (response.config.headers)
-      expect(response.config.headers["Content-Type"]).toEqual(
+      expect(response.config.headers["content-type"]).toEqual(
         "application/x-www-form-urlencoded;charset=utf-8",
       );
     expect(response.config.data).toEqual("title=hello&content=world");
@@ -641,13 +644,13 @@ describe("Test ts-retrofit.", () => {
     };
     const service = new ServiceBuilder()
       .setEndpoint(TEST_SERVER_ENDPOINT)
-      /* .setLogCallback(myLogCallback) */
+      .setLogCallback(myLogCallback)
       .build(HealthService);
     const response1 = await service.ping();
     expect(response1.config.url).toEqual(`${TEST_SERVER_ENDPOINT}/ping`);
     expect(response1.data).toEqual({ result: "pong" });
 
-    /* service.setLogCallback(myLogCallback2); */
+    service.setLogCallback(myLogCallback2);
     const response2 = await service.ping();
     expect(response2.config.url).toEqual(`${TEST_SERVER_ENDPOINT}/ping`);
     expect(response2.data).toEqual({ result: "pong" });
@@ -660,7 +663,7 @@ describe("Test ts-retrofit.", () => {
     };
     const service = new ServiceBuilder()
       .setEndpoint(TEST_SERVER_ENDPOINT)
-      /* .setLogCallback(myLogCallback) */
+      .setLogCallback(myLogCallback)
       .build(HealthService);
     try {
       await service.boom();
