@@ -283,7 +283,6 @@ describe("Test ts-retrofit.", () => {
 
   test("Test `@Multipart` decorator.", async () => {
     const fileService = new ServiceBuilder()
-
       .setEndpoint(TEST_SERVER_ENDPOINT)
       .build(FileService);
     const bucket = {
@@ -300,18 +299,8 @@ describe("Test ts-retrofit.", () => {
       );
   });
 
-  // [ ] Log request data using interceptor to see where the parts are being placed
-
   test("Test `@Multipart` decorator 1.", async () => {
     const messagingService = new ServiceBuilder()
-      .setRequestInterceptors([
-        {
-          fulfilled: (config) => {
-            console.warn("Fulfilled", config);
-            return config;
-          },
-        },
-      ])
       .setEndpoint(TEST_SERVER_ENDPOINT)
       .build(MessagingService);
     const from = { value: "+11111111" };
@@ -322,6 +311,8 @@ describe("Test ts-retrofit.", () => {
       expect(response.config.headers["content-type"]).toContain(
         "multipart/form-data",
       );
+    expect(response.data.from).toEqual(from.value);
+    expect(response.data.to).toEqual(to.value);
   });
 
   test("Test Request Interceptor Fulfilled", async () => {

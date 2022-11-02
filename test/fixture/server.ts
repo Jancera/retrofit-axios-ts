@@ -82,11 +82,10 @@ app.get("/api/v1/file", upload.any(), function (req, res) {
   res.status(200).json({});
 });
 
-app.post("/api/v1/sms", jsonParser, function (req, res) {
-  console.warn("Body", req.body);
+app.post("/api/v1/sms", upload.single(), function (req, res) {
   // get fields of form data from `req.body`
   // get files from req.files array
-  res.status(200).json({});
+  res.status(200).json({ from: req.body.from, to: req.body.to });
 });
 
 app.post("/api/v1/groups", jsonParser, function (req, res) {

@@ -34,7 +34,7 @@ import Query from "../../src/decorators/methodParameter/Query";
 import QueryMap from "../../src/decorators/methodParameter/QueryMap";
 
 export const TEST_SERVER_HOST = "http://localhost";
-export const TEST_SERVER_PORT = 12345;
+export const TEST_SERVER_PORT = 12341;
 export const TEST_SERVER_ENDPOINT = `${TEST_SERVER_HOST}:${TEST_SERVER_PORT}`;
 export const API_PREFIX = "/api/v1";
 export const TOKEN = "abcdef123456";
