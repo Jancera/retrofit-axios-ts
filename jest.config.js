@@ -10,4 +10,5 @@ module.exports = {
   rootDir: ".",
   coverageReporters: ["json-summary", "text", "lcov"],
   coveragePathIgnorePatterns: ["/node_modules/", "/test/fixture/"],
+  watchAll: false,
 };

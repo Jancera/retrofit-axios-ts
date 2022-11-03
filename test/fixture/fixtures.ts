@@ -23,6 +23,7 @@ import ResponseStatus from "../../src/decorators/method/ResponseStatus";
 import ResponseTransformer from "../../src/decorators/method/ResponseTransformer";
 import ResponseType from "../../src/decorators/method/ResponseType";
 import Timeout from "../../src/decorators/method/Timeout";
+import AbortSignal from "../../src/decorators/methodParameter/AbortSignal";
 import Body from "../../src/decorators/methodParameter/Body";
 import Field from "../../src/decorators/methodParameter/Field";
 import FieldMap from "../../src/decorators/methodParameter/FieldMap";
@@ -392,6 +393,27 @@ export class ConfigService extends BaseService {
   async getConfig(): Promise<Response> {
     return <Response>{};
   }
+}
+
+@BasePath(API_PREFIX)
+export class AbortSignalService extends BaseService {
+  @GET("/abort")
+  async setAbortSignal(
+    @AbortSignal abortSignal: AbortSignal,
+  ): Promise<Response> {
+    return <Response>{};
+  }
+}
+
+@BasePath(API_PREFIX)
+export class UploadProgressService extends BaseService {
+  /* @GET("/upload")
+  async uploadFile(
+    @UploadProgress
+    uploadProgress: (axiosProgressEvent: AxiosProgressEvent) => void,
+  ): Promise<Response> {
+    return <Response>{};
+  } */
 }
 
 @BasePath(API_PREFIX)

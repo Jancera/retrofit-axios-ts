@@ -27,6 +27,8 @@ import {
   AbsoluteURLService,
   SearchService,
   SearchQuery,
+  AbortSignalService,
+  UploadProgressService,
 } from "./fixture/fixtures";
 import { ServiceBuilder } from "../src/BaseService/serviceBuilder";
 import {
@@ -34,6 +36,7 @@ import {
   RequestInterceptors,
   Response,
 } from "../src/BaseService/types";
+import axios from "axios";
 
 /* declare module "axios" {
   interface AxiosRequestConfig {
@@ -238,6 +241,7 @@ describe("Test ts-retrofit.", () => {
       .setEndpoint(TEST_SERVER_ENDPOINT)
       .build(PostService);
     const response = await postService.getPosts1("typescript");
+    console.warn("Response", response.config.params);
     expect(response.config.params.group).toEqual("typescript");
   });
 
@@ -479,9 +483,13 @@ describe("Test ts-retrofit.", () => {
     const userService = new ServiceBuilder()
       .setEndpoint(TEST_SERVER_ENDPOINT)
       .build(UserService);
-    const response = await userService.getUsers(TOKEN);
-    if (response.config.headers)
-      expect(response.config.headers["X-Token"]).toEqual(TOKEN);
+    try {
+      const response = await userService.getUsers(TOKEN);
+      if (response.config.headers)
+        expect(response.config.headers["X-Token"]).toEqual(TOKEN);
+    } catch (error) {
+      console.warn("Error forced", error);
+    }
   });
 
   test("Test `@ResponseType` decorator.", async () => {
@@ -560,6 +568,48 @@ describe("Test ts-retrofit.", () => {
     const response = await service.getConfig();
     expect(response.config.maxRedirects).toEqual(1);
   });
+
+  test("Test `@AbortSignal` decorator.", async () => {
+    const controller = new AbortController();
+
+    const service = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(AbortSignalService);
+
+    const timer = setTimeout(() => {
+      controller.abort();
+      console.warn("Aborted");
+    }, 500);
+
+    try {
+      await service.setAbortSignal(controller.signal);
+
+      clearTimeout(timer);
+    } catch (error: any) {
+      setTimeout(() => {
+        expect(axios.isCancel(error)).toEqual(true);
+      }, 1100);
+    }
+  });
+
+  /*   test("Test `@UploadProgress` decorator.", async () => {
+    axios({onUploadProgress: ()})
+    try {
+      const service = new ServiceBuilder()
+        .setEndpoint(TEST_SERVER_ENDPOINT)
+        .build(UploadProgressService);
+
+      const controller = new AbortController();
+      const response = service.uploadFile((uploadProgress) => {
+        
+      });
+      controller.abort();
+      console.warn("Response", response);
+    } catch (error: any) {
+      console.warn("Catch request", error);
+       
+    }
+  }); */
 
   test("Test `ignoreBasePath` in HTTP method option.", async () => {
     const service = new ServiceBuilder()

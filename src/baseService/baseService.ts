@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import * as qs from "qs";
 import { HttpMethod, NON_HTTP_REQUEST_PROPERTY_NAME } from "../constants";
 import { HttpMethodOptions } from "../decorators";
@@ -30,6 +31,7 @@ export class BaseService {
     this._logCallback = serviceBuilder.logCallback;
 
     const methodNames = this._getInstanceMethodNames();
+
     methodNames.forEach((methodName) => {
       this._methodMap[methodName] = this[methodName];
     });
@@ -114,10 +116,12 @@ export class BaseService {
   private _getInstanceMethodNames(): string[] {
     let properties: string[] = [];
     let obj = this;
+
     do {
       properties = properties.concat(Object.getOwnPropertyNames(obj));
       obj = Object.getPrototypeOf(obj);
     } while (obj);
+
     return properties.sort().filter((e, i, arr) => {
       return e !== arr[i + 1] && this[e] && typeof this[e] === "function";
     });
@@ -125,10 +129,9 @@ export class BaseService {
 
   @nonHTTPRequestMethod
   private async _wrap(methodName: string, args: any[]): Promise<Response> {
-    const { url, method, headers, query, data } = this._resolveParameters(
-      methodName,
-      args,
-    );
+    const { url, method, headers, query, data, signal } =
+      this._resolveParameters(methodName, args);
+
     const config = this._makeConfig(
       methodName,
       url,
@@ -136,21 +139,27 @@ export class BaseService {
       headers,
       query,
       data,
+      signal,
     );
+
     let error;
     let response;
+
     try {
       response = await this._httpClient.sendRequest(config);
     } catch (err: any) {
       error = err;
       response = err.response;
     }
+
     if (this._logCallback) {
       this._logCallback(config, response);
     }
+
     if (error) {
       throw error;
     }
+
     return response;
   }
 
@@ -161,6 +170,8 @@ export class BaseService {
     let headers = this._resolveHeaders(methodName, args);
     const query = this._resolveQuery(methodName, args);
     const data = this._resolveData(methodName, headers, args);
+    const signal = this._resolveSignal(methodName, args);
+
     if (
       headers["content-type"] &&
       headers["content-type"].indexOf("multipart/form-data") !== -1 &&
@@ -171,7 +182,7 @@ export class BaseService {
         ...(data as FormData).getHeaders(),
       };
     }
-    return { url, method, headers, query, data };
+    return { url, method, headers, query, data, signal };
   }
 
   @nonHTTPRequestMethod
@@ -182,6 +193,7 @@ export class BaseService {
     headers: any,
     query: any,
     data: any,
+    signal: any,
   ): RequestConfig {
     let config: RequestConfig = {
       url,
@@ -189,7 +201,9 @@ export class BaseService {
       headers,
       params: query,
       data,
+      signal,
     };
+
     // response type
     if (this.__meta__[methodName].responseType) {
       config.responseType = this.__meta__[methodName].responseType;
@@ -208,6 +222,7 @@ export class BaseService {
     if (this.__meta__[methodName].deprecated) {
       let hint = `[warning] Deprecated method: "${methodName}". `;
       if (this.__meta__[methodName].deprecatedHint) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         hint += this.__meta__[methodName].deprecatedHint;
       }
       // tslint:disable-next-line:no-console
@@ -311,6 +326,21 @@ export class BaseService {
       }
     }
     return query;
+  }
+
+  @nonHTTPRequestMethod
+  private _resolveSignal(methodName: string, args: any[]): any {
+    const meta = this.__meta__;
+    let signal;
+
+    const abortSignal = meta[methodName].signal;
+
+    // @AbortSignal
+    if (abortSignal >= 0) {
+      signal = args[abortSignal];
+    }
+
+    return signal;
   }
 
   @nonHTTPRequestMethod
