@@ -1,3 +1,4 @@
+import { AxiosProgressEvent } from "axios";
 import { PartDescriptor } from "../../src";
 import { BaseService } from "../../src/BaseService";
 import { Response } from "../../src/BaseService/types";
@@ -25,6 +26,7 @@ import ResponseType from "../../src/decorators/method/ResponseType";
 import Timeout from "../../src/decorators/method/Timeout";
 import AbortSignal from "../../src/decorators/methodParameter/AbortSignal";
 import Body from "../../src/decorators/methodParameter/Body";
+import DownloadProgress from "../../src/decorators/methodParameter/DownloadProgress";
 import Field from "../../src/decorators/methodParameter/Field";
 import FieldMap from "../../src/decorators/methodParameter/FieldMap";
 import Header from "../../src/decorators/methodParameter/Header";
@@ -33,6 +35,7 @@ import Part from "../../src/decorators/methodParameter/Part";
 import Path from "../../src/decorators/methodParameter/Path";
 import Query from "../../src/decorators/methodParameter/Query";
 import QueryMap from "../../src/decorators/methodParameter/QueryMap";
+import UploadProgress from "../../src/decorators/methodParameter/UploadProgress";
 
 export const TEST_SERVER_HOST = "http://localhost";
 export const TEST_SERVER_PORT = 12345;
@@ -406,14 +409,23 @@ export class AbortSignalService extends BaseService {
 }
 
 @BasePath(API_PREFIX)
-export class UploadProgressService extends BaseService {
-  /* @GET("/upload")
+export class ProgressService extends BaseService {
+  @POST("/upload")
+  @Multipart
   async uploadFile(
-    @UploadProgress
-    uploadProgress: (axiosProgressEvent: AxiosProgressEvent) => void,
+    @Part("file") file: PartDescriptor<Buffer>,
+    @UploadProgress callback: (axiosProgressEvent: AxiosProgressEvent) => void,
   ): Promise<Response> {
     return <Response>{};
-  } */
+  }
+
+  @GET("/download")
+  async downloadFile(
+    @DownloadProgress
+    callback: (axiosProgressEvent: AxiosProgressEvent) => void,
+  ): Promise<Response> {
+    return <Response>{};
+  }
 }
 
 @BasePath(API_PREFIX)

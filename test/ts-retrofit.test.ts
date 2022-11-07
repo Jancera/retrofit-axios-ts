@@ -28,7 +28,7 @@ import {
   SearchService,
   SearchQuery,
   AbortSignalService,
-  UploadProgressService,
+  ProgressService,
 } from "./fixture/fixtures";
 import { ServiceBuilder } from "../src/BaseService/serviceBuilder";
 import {
@@ -592,24 +592,36 @@ describe("Test ts-retrofit.", () => {
     }
   });
 
-  /*   test("Test `@UploadProgress` decorator.", async () => {
-    axios({onUploadProgress: ()})
-    try {
-      const service = new ServiceBuilder()
-        .setEndpoint(TEST_SERVER_ENDPOINT)
-        .build(UploadProgressService);
+  test("Test `@UploadProgress` decorator.", async () => {
+    const service = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(ProgressService);
 
-      const controller = new AbortController();
-      const response = service.uploadFile((uploadProgress) => {
-        
-      });
-      controller.abort();
-      console.warn("Response", response);
-    } catch (error: any) {
-      console.warn("Catch request", error);
-       
-    }
-  }); */
+    const file = {
+      value: fs.readFileSync("test/fixture/money.png"),
+      filename: "money.png",
+    };
+
+    const response = await service.uploadFile(file, (uploadProgress) => {
+      console.warn("UploadProgress", uploadProgress);
+      expect(uploadProgress.progress !== undefined).toBe(true);
+    });
+
+    console.warn("Response", response);
+  });
+
+  test("Test `@DownloadProgress` decorator.", async () => {
+    const service = new ServiceBuilder()
+      .setEndpoint(TEST_SERVER_ENDPOINT)
+      .build(ProgressService);
+
+    const response = await service.downloadFile((downloadProgress) => {
+      console.warn("DownloadProgress", downloadProgress);
+      expect(downloadProgress.progress !== undefined).toBe(true);
+    });
+
+    console.warn("Response", response);
+  });
 
   test("Test `ignoreBasePath` in HTTP method option.", async () => {
     const service = new ServiceBuilder()

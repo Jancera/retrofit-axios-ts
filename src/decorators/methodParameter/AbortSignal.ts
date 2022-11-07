@@ -5,7 +5,7 @@ import ensureMeta from "../helpers/ensureMeta";
  * @param target
  * @param methodName
  * @param paramIndex
- * @sample @Body user: User
+ * @sample @AbortSignal callback: UploadProgressCallback
  * @constructor
  */
 const AbortSignal = (target: any, methodName: string, paramIndex: number) => {

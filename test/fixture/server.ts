@@ -1,11 +1,13 @@
 import express from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
+import path from "path";
 
 export const app = express();
 
 const jsonParser = bodyParser.json();
 const upload = multer();
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const sleep = async (milliseconds: number): Promise<void> => {
@@ -72,10 +74,14 @@ app.post("/api/v1/posts", jsonParser, function (req, res) {
   res.status(200).json({});
 });
 
-app.post("/api/v1/upload", upload.any(), function (req, res) {
+app.post("/api/v1/upload", upload.single("file"), function (req, res) {
   // get fields of form data from `req.body`
   // get files from req.files array
   res.status(200).json({});
+});
+
+app.get("/api/v1/download", function (req, res) {
+  res.sendFile(path.resolve(__dirname, "./money.png"));
 });
 
 app.get("/api/v1/file", upload.any(), function (req, res) {
@@ -155,3 +161,5 @@ app.post("/graphql", async function (req, res) {
 app.get("/api/v1/users/:userId/pets", function (req, res) {
   res.status(200).json({});
 });
+
+/* app.listen(3000, () => console.log("App is running on port 3000")); */

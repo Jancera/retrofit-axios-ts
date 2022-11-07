@@ -14,6 +14,13 @@ import {
 } from "./types";
 import { isNode } from "../utils";
 import DataResolverFactory from "../resolvers/Data";
+import { AxiosProgressEvent, GenericAbortSignal } from "axios";
+
+interface RequestConfigParameters {
+  signal?: GenericAbortSignal;
+  uploadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  downloadProgress?: (progressEvent: AxiosProgressEvent) => void;
+}
 
 export class BaseService {
   public __meta__: any;
@@ -129,7 +136,7 @@ export class BaseService {
 
   @nonHTTPRequestMethod
   private async _wrap(methodName: string, args: any[]): Promise<Response> {
-    const { url, method, headers, query, data, signal } =
+    const { url, method, headers, query, data, requestConfigParameters } =
       this._resolveParameters(methodName, args);
 
     const config = this._makeConfig(
@@ -139,7 +146,7 @@ export class BaseService {
       headers,
       query,
       data,
-      signal,
+      requestConfigParameters,
     );
 
     let error;
@@ -170,7 +177,22 @@ export class BaseService {
     let headers = this._resolveHeaders(methodName, args);
     const query = this._resolveQuery(methodName, args);
     const data = this._resolveData(methodName, headers, args);
+
     const signal = this._resolveSignal(methodName, args);
+    const uploadProgressCallback = this._resolveUploadProgress(
+      methodName,
+      args,
+    );
+    const downloadProgressCallback = this._resolveDownloadProgress(
+      methodName,
+      args,
+    );
+
+    const requestConfigParameters: RequestConfigParameters = {
+      signal,
+      uploadProgress: uploadProgressCallback,
+      downloadProgress: downloadProgressCallback,
+    };
 
     if (
       headers["content-type"] &&
@@ -182,7 +204,7 @@ export class BaseService {
         ...(data as FormData).getHeaders(),
       };
     }
-    return { url, method, headers, query, data, signal };
+    return { url, method, headers, query, data, requestConfigParameters };
   }
 
   @nonHTTPRequestMethod
@@ -193,8 +215,11 @@ export class BaseService {
     headers: any,
     query: any,
     data: any,
-    signal: any,
+    requestConfigParameters: RequestConfigParameters,
   ): RequestConfig {
+    const { signal, uploadProgress, downloadProgress } =
+      requestConfigParameters;
+
     let config: RequestConfig = {
       url,
       method,
@@ -202,6 +227,8 @@ export class BaseService {
       params: query,
       data,
       signal,
+      onUploadProgress: uploadProgress,
+      onDownloadProgress: downloadProgress,
     };
 
     // response type
@@ -335,12 +362,39 @@ export class BaseService {
 
     const abortSignal = meta[methodName].signal;
 
-    // @AbortSignal
     if (abortSignal >= 0) {
       signal = args[abortSignal];
     }
 
     return signal;
+  }
+
+  @nonHTTPRequestMethod
+  private _resolveUploadProgress(methodName: string, args: any[]): any {
+    const meta = this.__meta__;
+    let _uploadProgress;
+
+    const uploadProgressIndex = meta[methodName].uploadProgressIndex;
+
+    if (uploadProgressIndex >= 0) {
+      _uploadProgress = args[uploadProgressIndex];
+    }
+
+    return _uploadProgress;
+  }
+
+  @nonHTTPRequestMethod
+  private _resolveDownloadProgress(methodName: string, args: any[]): any {
+    const meta = this.__meta__;
+    let _downloadProgress;
+
+    const downloadProgressIndex = meta[methodName].downloadProgressIndex;
+
+    if (downloadProgressIndex >= 0) {
+      _downloadProgress = args[downloadProgressIndex];
+    }
+
+    return _downloadProgress;
   }
 
   @nonHTTPRequestMethod
