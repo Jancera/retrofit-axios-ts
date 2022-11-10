@@ -1,5 +1,5 @@
 import { ResponseType as AxiosResponseType } from "axios";
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set the response type for method.
@@ -7,11 +7,9 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @ResponseType("stream")
  * @constructor
  */
-const ResponseType = (responseType: AxiosResponseType) => {
+export const ResponseType = (responseType: AxiosResponseType) => {
   return (target: any, methodName: string) => {
     ensureMeta(target, methodName);
     target.__meta__[methodName].responseType = responseType;
   };
 };
-
-export default ResponseType;

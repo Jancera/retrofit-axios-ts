@@ -1,14 +1,15 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
- * Set body for API endpoint.
+ * Set upload progress callback for API endpoint.
  * @param target
  * @param methodName
  * @param paramIndex
  * @sample @UploadProgress callback: UploadProgressCallback
  * @constructor
  */
-const UploadProgress = (
+
+export const UploadProgress = (
   target: any,
   methodName: string,
   paramIndex: number,
@@ -16,5 +17,3 @@ const UploadProgress = (
   ensureMeta(target, methodName);
   target.__meta__[methodName].uploadProgressIndex = paramIndex;
 };
-
-export default UploadProgress;

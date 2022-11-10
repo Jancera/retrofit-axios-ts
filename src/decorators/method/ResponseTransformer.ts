@@ -1,5 +1,5 @@
 import { AxiosResponseTransformer } from "axios";
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set response transformer for method.
@@ -11,11 +11,9 @@ import ensureMeta from "../helpers/ensureMeta";
  *         })
  * @constructor
  */
-const ResponseTransformer = (transformer: AxiosResponseTransformer) => {
+export const ResponseTransformer = (transformer: AxiosResponseTransformer) => {
   return (target: any, methodName: string) => {
     ensureMeta(target, methodName);
     target.__meta__[methodName].responseTransformer = transformer;
   };
 };
-
-export default ResponseTransformer;

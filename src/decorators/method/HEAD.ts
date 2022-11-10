@@ -1,4 +1,4 @@
-import registerMethod from "../helpers/registerMethod";
+import { registerMethod } from "../helpers/registerMethod";
 import { HttpMethodOptions } from "../types";
 
 /**
@@ -8,8 +8,6 @@ import { HttpMethodOptions } from "../types";
  * @sample @HEAD("/users/{userId}")
  * @constructor
  */
-const HEAD = (url: string, options?: HttpMethodOptions) => {
+export const HEAD = (url: string, options?: HttpMethodOptions) => {
   return registerMethod("HEAD", url, options);
 };
-
-export default HEAD;

@@ -1,4 +1,4 @@
-import registerMethod from "../helpers/registerMethod";
+import { registerMethod } from "../helpers/registerMethod";
 import { HttpMethodOptions } from "../types";
 
 /**
@@ -8,8 +8,6 @@ import { HttpMethodOptions } from "../types";
  * @sample @GET("/users")
  * @constructor
  */
-const GET = (url: string, options?: HttpMethodOptions) => {
+export const GET = (url: string, options?: HttpMethodOptions) => {
   return registerMethod("GET", url, options);
 };
-
-export default GET;

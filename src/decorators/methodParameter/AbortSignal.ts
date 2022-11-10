@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set body for API endpoint.
@@ -8,9 +8,12 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @AbortSignal callback: UploadProgressCallback
  * @constructor
  */
-const AbortSignal = (target: any, methodName: string, paramIndex: number) => {
+
+export const AbortSignal = (
+  target: any,
+  methodName: string,
+  paramIndex: number,
+) => {
   ensureMeta(target, methodName);
   target.__meta__[methodName].signal = paramIndex;
 };
-
-export default AbortSignal;

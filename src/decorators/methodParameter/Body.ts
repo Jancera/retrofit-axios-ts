@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set body for API endpoint.
@@ -8,9 +8,8 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @Body user: User
  * @constructor
  */
-const Body = (target: any, methodName: string, paramIndex: number) => {
+
+export const Body = (target: any, methodName: string, paramIndex: number) => {
   ensureMeta(target, methodName);
   target.__meta__[methodName].bodyIndex = paramIndex;
 };
-
-export default Body;

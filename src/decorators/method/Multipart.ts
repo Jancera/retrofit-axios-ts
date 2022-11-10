@@ -1,4 +1,4 @@
-import Headers from "./Headers";
+import { Headers } from "./Headers";
 
 /**
  * 'content-type': 'multipart/form-data' will be added to HTTP headers.
@@ -8,7 +8,7 @@ import Headers from "./Headers";
  * @sample @Multipart
  * @constructor
  */
-const Multipart = (
+export const Multipart = (
   target: any,
   methodName: string,
   descriptor: PropertyDescriptor,
@@ -19,5 +19,3 @@ const Multipart = (
     descriptor,
   );
 };
-
-export default Multipart;

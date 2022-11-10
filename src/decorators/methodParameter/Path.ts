@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set path parameter for API endpoint.
@@ -6,7 +6,8 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @Path("userId") userId: number
  * @constructor
  */
-const Path = (paramName: string) => {
+
+export const Path = (paramName: string) => {
   return (target: any, methodName: string, paramIndex: number) => {
     ensureMeta(target, methodName);
     if (!target.__meta__[methodName].pathParams) {
@@ -15,5 +16,3 @@ const Path = (paramName: string) => {
     target.__meta__[methodName].pathParams[paramIndex] = paramName;
   };
 };
-
-export default Path;

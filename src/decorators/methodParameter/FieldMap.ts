@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set field map for API endpoint.
@@ -8,9 +8,12 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @FieldMap post: Post
  * @constructor
  */
-const FieldMap = (target: any, methodName: string, paramIndex: number) => {
+
+export const FieldMap = (
+  target: any,
+  methodName: string,
+  paramIndex: number,
+) => {
   ensureMeta(target, methodName);
   target.__meta__[methodName].fieldMapIndex = paramIndex;
 };
-
-export default FieldMap;

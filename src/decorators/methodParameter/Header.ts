@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set HTTP header as variable in API method.
@@ -6,7 +6,8 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @Header("X-Token") token: string
  * @constructor
  */
-const Header = (paramName: string) => {
+
+export const Header = (paramName: string) => {
   return (target: any, methodName: string, paramIndex: number) => {
     ensureMeta(target, methodName);
     if (!target.__meta__[methodName].headerParams) {
@@ -15,5 +16,3 @@ const Header = (paramName: string) => {
     target.__meta__[methodName].headerParams[paramIndex] = paramName;
   };
 };
-
-export default Header;

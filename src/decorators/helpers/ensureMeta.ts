@@ -5,7 +5,7 @@ import { BaseService } from "../../BaseService";
  * @param target
  * @param methodName
  */
-const ensureMeta = (target: BaseService, methodName: string) => {
+export const ensureMeta = (target: BaseService, methodName: string) => {
   if (!target.__meta__) {
     target.__meta__ = {};
   }
@@ -13,5 +13,3 @@ const ensureMeta = (target: BaseService, methodName: string) => {
     target.__meta__[methodName] = {};
   }
 };
-
-export default ensureMeta;

@@ -1,5 +1,5 @@
 import { AxiosRequestTransformer } from "axios";
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set request transformer for method.
@@ -10,11 +10,9 @@ import ensureMeta from "../helpers/ensureMeta";
  *         })
  * @constructor
  */
-const RequestTransformer = (transformer: AxiosRequestTransformer) => {
+export const RequestTransformer = (transformer: AxiosRequestTransformer) => {
   return (target: any, methodName: string) => {
     ensureMeta(target, methodName);
     target.__meta__[methodName].requestTransformer = transformer;
   };
 };
-
-export default RequestTransformer;

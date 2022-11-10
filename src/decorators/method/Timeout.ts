@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set timeout for method, this config will shield service timeout.
@@ -6,11 +6,9 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @Timeout(5000)
  * @constructor
  */
-const Timeout = (timeout: number) => {
+export const Timeout = (timeout: number) => {
   return (target: any, methodName: string) => {
     ensureMeta(target, methodName);
     target.__meta__[methodName].timeout = timeout;
   };
 };
-
-export default Timeout;

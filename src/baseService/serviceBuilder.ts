@@ -31,16 +31,16 @@ export class ServiceBuilder {
   }
 
   public setRequestInterceptors(
-    interceptors: RequestInterceptors[],
+    interceptors: RequestInterceptors,
   ): ServiceBuilder {
-    this._requestInterceptors.push(...interceptors);
+    this._requestInterceptors.push(interceptors);
     return this;
   }
 
   public setResponseInterceptors(
-    interceptors: ResponseInterceptors[],
+    interceptors: ResponseInterceptors,
   ): ServiceBuilder {
-    this._responseInterceptors.push(...interceptors);
+    this._responseInterceptors.push(interceptors);
     return this;
   }
 

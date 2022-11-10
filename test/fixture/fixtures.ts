@@ -1,41 +1,42 @@
-import { AxiosProgressEvent } from "axios";
-import { PartDescriptor } from "../../src";
 import { BaseService } from "../../src/BaseService";
 import { Response } from "../../src/BaseService/types";
-import BasePath from "../../src/decorators/BasePath";
-import Config from "../../src/decorators/method/Config";
-import DELETE from "../../src/decorators/method/DELETE";
-import Deprecated from "../../src/decorators/method/Deprecated";
-import FormUrlEncoded from "../../src/decorators/method/FormUrlEncoded";
-import GET from "../../src/decorators/method/GET";
-import GraphQL from "../../src/decorators/method/GraphQL";
-import GraphQLVariables from "../../src/decorators/method/GraphQLVariables";
-import HEAD from "../../src/decorators/method/HEAD";
-import Headers from "../../src/decorators/method/Headers";
-import Multipart from "../../src/decorators/method/Multipart";
-import OPTIONS from "../../src/decorators/method/OPTIONS";
-import PATCH from "../../src/decorators/method/PATCH";
-import POST from "../../src/decorators/method/POST";
-import PUT from "../../src/decorators/method/PUT";
-import Queries from "../../src/decorators/method/Queries";
-import QueryArrayFormat from "../../src/decorators/method/QueryArrayFormat";
-import RequestTransformer from "../../src/decorators/method/RequestTransformer";
-import ResponseStatus from "../../src/decorators/method/ResponseStatus";
-import ResponseTransformer from "../../src/decorators/method/ResponseTransformer";
-import ResponseType from "../../src/decorators/method/ResponseType";
-import Timeout from "../../src/decorators/method/Timeout";
-import AbortSignal from "../../src/decorators/methodParameter/AbortSignal";
-import Body from "../../src/decorators/methodParameter/Body";
-import DownloadProgress from "../../src/decorators/methodParameter/DownloadProgress";
-import Field from "../../src/decorators/methodParameter/Field";
-import FieldMap from "../../src/decorators/methodParameter/FieldMap";
-import Header from "../../src/decorators/methodParameter/Header";
-import HeaderMap from "../../src/decorators/methodParameter/HeaderMap";
-import Part from "../../src/decorators/methodParameter/Part";
-import Path from "../../src/decorators/methodParameter/Path";
-import Query from "../../src/decorators/methodParameter/Query";
-import QueryMap from "../../src/decorators/methodParameter/QueryMap";
-import UploadProgress from "../../src/decorators/methodParameter/UploadProgress";
+import {
+  AbortSignal,
+  BasePath,
+  Body,
+  Config,
+  DELETE,
+  Deprecated,
+  DownloadProgress,
+  Field,
+  FieldMap,
+  FormUrlEncoded,
+  GET,
+  GraphQL,
+  GraphQLVariables,
+  HEAD,
+  Header,
+  HeaderMap,
+  Headers,
+  Multipart,
+  OPTIONS,
+  Part,
+  PATCH,
+  Path,
+  POST,
+  PUT,
+  Queries,
+  Query,
+  QueryArrayFormat,
+  QueryMap,
+  RequestTransformer,
+  ResponseStatus,
+  ResponseTransformer,
+  ResponseType,
+  Timeout,
+  UploadProgress,
+} from "../../src/decorators";
+import { PartDescriptor, ProgressEvent } from "../../src/decorators/types";
 
 export const TEST_SERVER_HOST = "http://localhost";
 export const TEST_SERVER_PORT = 12345;
@@ -414,7 +415,7 @@ export class ProgressService extends BaseService {
   @Multipart
   async uploadFile(
     @Part("file") file: PartDescriptor<Buffer>,
-    @UploadProgress callback: (axiosProgressEvent: AxiosProgressEvent) => void,
+    @UploadProgress callback: (axiosProgressEvent: ProgressEvent) => void,
   ): Promise<Response> {
     return <Response>{};
   }
@@ -422,7 +423,7 @@ export class ProgressService extends BaseService {
   @GET("/download")
   async downloadFile(
     @DownloadProgress
-    callback: (axiosProgressEvent: AxiosProgressEvent) => void,
+    callback: (axiosProgressEvent: ProgressEvent) => void,
   ): Promise<Response> {
     return <Response>{};
   }

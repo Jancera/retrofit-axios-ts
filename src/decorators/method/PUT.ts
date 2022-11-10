@@ -1,4 +1,4 @@
-import registerMethod from "../helpers/registerMethod";
+import { registerMethod } from "../helpers/registerMethod";
 import { HttpMethodOptions } from "../types";
 
 /**
@@ -8,8 +8,6 @@ import { HttpMethodOptions } from "../types";
  * @sample @PUT("/users/{userId}")
  * @constructor
  */
-const PUT = (url: string, options?: HttpMethodOptions) => {
+export const PUT = (url: string, options?: HttpMethodOptions) => {
   return registerMethod("PUT", url, options);
 };
-
-export default PUT;

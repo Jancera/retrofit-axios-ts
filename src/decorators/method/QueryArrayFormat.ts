@@ -1,6 +1,6 @@
 import { BaseService } from "../../BaseService";
-import ensureMeta from "../helpers/ensureMeta";
-import { QueryArrayFormat as QueryArrayFormatType } from "../types";
+import { ensureMeta } from "../helpers/ensureMeta";
+import { RetrofitQueryArrayFormat } from "../types";
 
 /**
  * Set array format for query
@@ -8,7 +8,9 @@ import { QueryArrayFormat as QueryArrayFormatType } from "../types";
  * @sample @QueryArrayFormat('repeat')
  * @constructor
  */
-const QueryArrayFormat = (queryArrayFormat: QueryArrayFormatType) => {
+export const QueryArrayFormat = (
+  queryArrayFormat: RetrofitQueryArrayFormat,
+) => {
   return (
     target: BaseService,
     methodName: string,
@@ -18,5 +20,3 @@ const QueryArrayFormat = (queryArrayFormat: QueryArrayFormatType) => {
     target.__meta__[methodName].queryArrayFormat = queryArrayFormat;
   };
 };
-
-export default QueryArrayFormat;

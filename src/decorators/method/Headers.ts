@@ -1,5 +1,5 @@
-import ensureMeta from "../helpers/ensureMeta";
-import { Headers as HeadersObj } from "../types";
+import { ensureMeta } from "../helpers/ensureMeta";
+import { RetrofitHeaders } from "../types";
 
 /**
  * Set static HTTP headers for API endpoint.
@@ -10,7 +10,7 @@ import { Headers as HeadersObj } from "../types";
  *         })
  * @constructor
  */
-const Headers = (headers: HeadersObj) => {
+export const Headers = (headers: RetrofitHeaders) => {
   return (target: any, methodName: string, descriptor: PropertyDescriptor) => {
     ensureMeta(target, methodName);
     if (!target.__meta__[methodName].headers) {
@@ -19,5 +19,3 @@ const Headers = (headers: HeadersObj) => {
     target.__meta__[methodName].headers = headers;
   };
 };
-
-export default Headers;

@@ -1,8 +1,8 @@
-export interface Headers {
+export interface RetrofitHeaders {
   [x: string]: string | number;
 }
 
-export interface Query {
+export interface RetrofitQuery {
   [x: string]: string | number | boolean;
 }
 
@@ -19,8 +19,19 @@ export interface HttpMethodOptions {
 // brackets: ?foo[]=bar&foo[]=qux
 // repeat:   ?foo=bar&foo=qux
 // comma:    ?foo=bar,qux
-export type QueryArrayFormat = "indices" | "brackets" | "repeat" | "comma";
+export type RetrofitQueryArrayFormat =
+  | "indices"
+  | "brackets"
+  | "repeat"
+  | "comma";
 
 export interface QueryOptions {
-  arrayFormat?: QueryArrayFormat; // default is brackets
+  arrayFormat?: RetrofitQueryArrayFormat; // default is brackets
+}
+
+export interface ProgressEvent {
+  isTrusted: boolean;
+  lengthComputable: boolean;
+  loaded: number;
+  total: number;
 }

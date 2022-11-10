@@ -1,4 +1,4 @@
-import Headers from "./Headers";
+import { Headers } from "./Headers";
 
 /**
  * 'content-type': 'application/x-www-form-urlencoded;charset=utf-8' will be added.
@@ -8,7 +8,7 @@ import Headers from "./Headers";
  * @sample @FormUrlEncoded
  * @constructor
  */
-const FormUrlEncoded = (
+export const FormUrlEncoded = (
   target: any,
   methodName: string,
   descriptor: PropertyDescriptor,
@@ -17,5 +17,3 @@ const FormUrlEncoded = (
     "content-type": "application/x-www-form-urlencoded;charset=utf-8",
   })(target, methodName, descriptor);
 };
-
-export default FormUrlEncoded;

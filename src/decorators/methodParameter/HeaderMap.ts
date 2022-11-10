@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set header map for API endpoint.
@@ -8,9 +8,12 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @HeaderMap headers: any
  * @constructor
  */
-const HeaderMap = (target: any, methodName: string, paramIndex: number) => {
+
+export const HeaderMap = (
+  target: any,
+  methodName: string,
+  paramIndex: number,
+) => {
   ensureMeta(target, methodName);
   target.__meta__[methodName].headerMapIndex = paramIndex;
 };
-
-export default HeaderMap;

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import * as qs from "qs";
 import { HttpMethod, NON_HTTP_REQUEST_PROPERTY_NAME } from "../constants";
-import { HttpMethodOptions } from "../decorators";
+
 import FormData from "form-data";
 import { HttpClient } from "./httpClient";
 import { nonHTTPRequestMethod } from "./helpers/nonHTTPRequestMethod";
@@ -14,12 +14,12 @@ import {
 } from "./types";
 import { isNode } from "../utils";
 import DataResolverFactory from "../resolvers/Data";
-import { AxiosProgressEvent, GenericAbortSignal } from "axios";
+import { HttpMethodOptions } from "../decorators/types";
 
 interface RequestConfigParameters {
-  signal?: GenericAbortSignal;
-  uploadProgress?: (progressEvent: AxiosProgressEvent) => void;
-  downloadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  signal?: AbortSignal;
+  uploadProgress?: (progressEvent: any) => void;
+  downloadProgress?: (progressEvent: any) => void;
 }
 
 export class BaseService {
@@ -258,7 +258,8 @@ export class BaseService {
     // query array format
     if (this.__meta__[methodName].queryArrayFormat) {
       if (config.paramsSerializer) {
-        config.paramsSerializer.serialize = (params: any): string => {
+        // config.paramsSerializer.serialize = (params: any): string => {
+        config.paramsSerializer = (params: any): string => {
           return qs.stringify(params, {
             arrayFormat: this.__meta__[methodName].queryArrayFormat,
           });

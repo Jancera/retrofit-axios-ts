@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Adds variables to GraphQL query
@@ -8,7 +8,7 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @GraphQLVariables variables: any
  * @constructor
  */
-const GraphQLVariables = (
+export const GraphQLVariables = (
   target: any,
   methodName: string,
   paramIndex: number,
@@ -16,5 +16,3 @@ const GraphQLVariables = (
   ensureMeta(target, methodName);
   target.__meta__[methodName].gqlVariablesIndex = paramIndex;
 };
-
-export default GraphQLVariables;

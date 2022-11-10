@@ -1,5 +1,5 @@
-import ensureMeta from "../helpers/ensureMeta";
-import { Query } from "../types";
+import { ensureMeta } from "../helpers/ensureMeta";
+import { RetrofitQuery } from "../types";
 
 /**
  * Set static query for API endpoint.
@@ -11,7 +11,7 @@ import { Query } from "../types";
  *         })
  * @constructor
  */
-const Queries = (query: Query) => {
+export const Queries = (query: RetrofitQuery) => {
   return (target: any, methodName: string, descriptor: PropertyDescriptor) => {
     ensureMeta(target, methodName);
     if (!target.__meta__[methodName].query) {
@@ -20,5 +20,3 @@ const Queries = (query: Query) => {
     target.__meta__[methodName].query = query;
   };
 };
-
-export default Queries;

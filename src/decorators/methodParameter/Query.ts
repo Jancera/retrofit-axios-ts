@@ -1,4 +1,4 @@
-import ensureMeta from "../helpers/ensureMeta";
+import { ensureMeta } from "../helpers/ensureMeta";
 
 /**
  * Set query as variable in API method.
@@ -6,7 +6,8 @@ import ensureMeta from "../helpers/ensureMeta";
  * @sample @Query('group') group: string
  * @constructor
  */
-const Query = (paramName: string) => {
+
+export const Query = (paramName: string) => {
   return (target: any, methodName: string, paramIndex: number) => {
     ensureMeta(target, methodName);
     if (!target.__meta__[methodName].queryParams) {
